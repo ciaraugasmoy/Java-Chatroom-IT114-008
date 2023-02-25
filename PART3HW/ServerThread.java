@@ -24,7 +24,6 @@ public class ServerThread extends Thread {
         // get communication channels to single client
         this.client = myClient;
         this.server = server;
-
     }
 
     public void disconnect() {
@@ -55,13 +54,18 @@ public class ServerThread extends Thread {
             this.out = out;
             isRunning = true;
             String fromClient;
+            //welcomes client
+            server.sendPrivateMessage(this.getId(),"Welcome client["+ this.getId()+"] welcome to the server");
+            server.sendPrivateMessage(this.getId(),"Type HELP for all commands");
             while (isRunning && // flag to let us easily control the loop
                     (fromClient = (String) in.readObject()) != null // reads an object from inputStream (null would
                                                                     // likely mean a disconnect)
             ) {
-
                 info("Received from client: " + fromClient);
                 server.broadcast(fromClient, this.getId());
+              //  server.sendPrivateMessage(this.getId(),"Server: Please choose username:");
+              //  fromClient=(String) in.readObject();
+              //  server.sendPublicMessage("Server: this guy has entered the room: "+ fromClient);
             } // close while loop
         } catch (Exception e) {
             // happens when client disconnects

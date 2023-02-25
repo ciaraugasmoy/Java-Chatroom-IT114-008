@@ -11,7 +11,8 @@ public class Server {
     int port = 3001;
     // connected clients
     private List<ServerThread> clients = new ArrayList<ServerThread>();
-
+    protected String serverguide= "Commands: \n HELP - see all commands \n disconnect - disconnect from server\n STARTGAME - start number guesser game \n ENDGAME - end number guesser game \n DM @[username] [message] - message other client privately \n @all [message] - message all clients \n ***END OF COMMANDS***";
+   
     private void start(int port) {
         this.port = port;
         // server listening
@@ -44,27 +45,12 @@ public class Server {
 	}
     
     protected synchronized void broadcast(String message, long id) {
+        //disconnect command
         if(processCommand(message, id)){
 
             return;
         }
-        // let's temporarily use the thread id as the client identifier to
-        // show in all client's chat. This isn't good practice since it's subject to
-        // change as clients connect/disconnect
-        message = String.format("User[%d]: %s", id, message);
-        // end temp identifier
-        
-        // loop over clients and send out the message
-        Iterator<ServerThread> it = clients.iterator();
-        while (it.hasNext()) {
-            ServerThread client = it.next();
-            boolean wasSuccessful = client.send(message);
-            if (!wasSuccessful) {
-                System.out.println(String.format("Removing disconnected client[%s] from list", client.getId()));
-                it.remove();
-                broadcast("Disconnected", id);
-            }
-        }
+
     }
 
     private boolean processCommand(String message, long clientId){
@@ -82,8 +68,81 @@ public class Server {
             }
             return true;
         }
+        if(message.equalsIgnoreCase("help")){
+            sendPrivateMessage(clientId, serverguide);
+        } else
+        if(message.startsWith("@all ")){
+            sendPrivateMessage(clientId, "[you msgd all]");
+            String publicmessage= "[PUBLIC] Client"+clientId+": "+message;
+            sendPublicMessage(publicmessage);
+            
+        } else
+        if(message.equalsIgnoreCase("hep")){
+            sendPrivateMessage(clientId, "wack");
+        } /*else
+        if(message.startsWith("DM ")){
+            String mymessage= message.replaceFirst("DM ", "");
+            String recip= mymessage.split(" ")[0];
+            relayPrivateMessage(clientId, recip, mymessage);
+        }*/
         return false;
     }
+
+    //FUNC FOR COMMANDS
+    protected void messageAll(String message){
+        // let's temporarily use the thread id as the client identifier to
+        // show in all client's chat. This isn't good practice since it's subject to
+        // change as clients connect/disconnect
+        message = String.format("User[%d]: %s", id, message);
+        // end temp identifier
+        // loop over clients and send out the message
+        Iterator<ServerThread> it = clients.iterator();
+        while (it.hasNext()) {
+            ServerThread client = it.next();
+            boolean wasSuccessful = client.send(message);
+            if (!wasSuccessful) {
+                System.out.println(String.format("Removing disconnected client[%s] from list", client.getId()));
+                it.remove();
+                broadcast("Disconnected", id);
+            }
+        }
+    }
+    protected void relayPrivateMessage(long senderID, long recipID, String message){
+        Iterator<ServerThread> it = clients.iterator();
+        while (it.hasNext()) {
+            ServerThread client = it.next();
+            if(client.getId() == senderID){
+               //send message to client personally
+               String sentmessage= "[PRIVATE] To "+recipID+ ": "+ message;
+               client.send(sentmessage);
+            } else
+            if(client.getId() == recipID){
+                //send message to client personally
+                String recmessage="[PRIVATE] From "+senderID+ ": "+ message;
+                client.send(recmessage);
+            }
+        }
+    }
+    protected void sendPrivateMessage(long clientId, String message){
+        Iterator<ServerThread> it = clients.iterator();
+        while (it.hasNext()) {
+            ServerThread client = it.next();
+            if(client.getId() == clientId){
+               //send message to client personally
+               client.send(message);
+               break;
+            }
+        }
+    }
+    protected void sendPublicMessage(String message){
+        Iterator<ServerThread> it = clients.iterator();
+        while (it.hasNext()) {
+            ServerThread client = it.next();
+               //send message to all clients in array
+               client.send(message);
+        }
+    }
+    //end of my changes
     public static void main(String[] args) {
         System.out.println("Starting Server");
         Server server = new Server();
