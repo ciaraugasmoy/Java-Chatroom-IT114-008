@@ -6,12 +6,15 @@ import java.net.Socket;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Collections;
+import java.util.Arrays;
+import java.util.List;
 
 public class Server {
     int port = 3001;
     // connected clients
     private List<ServerThread> clients = new ArrayList<ServerThread>();
-    protected String serverguide= "Commands: \n HELP - see all commands \n disconnect - disconnect from server\n STARTGAME - start number guesser game \n ENDGAME - end number guesser game \n DM @[username] [message] - message other client privately \n @all [message] - message all clients \n ***END OF COMMANDS***";
+    protected String serverguide= "Commands: \n HELP - see all commands \n disconnect - disconnect from server\n SHUFFLE [message] - sends shuffled message to everyone \n DM [userid] [message] - message other client privately \n @all [message] - message all clients \n ***END OF COMMANDS***";
    
     private void start(int port) {
         this.port = port;
@@ -72,13 +75,16 @@ public class Server {
             sendPrivateMessage(clientId, serverguide);
         } else
         if(message.startsWith("@all ")){
-            sendPrivateMessage(clientId, "[you msgd all]");
+            sendPrivateMessage(clientId, "[you messaged everyone]");
             String publicmessage= "[PUBLIC] Client"+clientId+": "+message;
             sendPublicMessage(publicmessage);
             
         } else
-        if(message.equalsIgnoreCase("hep")){
-            sendPrivateMessage(clientId, "wack");
+        if(message.toUpperCase().startsWith("SHUFFLE ")){
+            String mymessage= message.substring("SHUFFLE ".length());
+            mymessage= shuffler(mymessage);
+            String publicmessage= "[PUBLIC] Client"+clientId+": "+mymessage;
+            sendPublicMessage(publicmessage);
         } else
         if(message.toUpperCase().startsWith("DM ")){
             String mymessage= message.substring(3);
@@ -143,6 +149,16 @@ public class Server {
                //send message to all clients in array
                client.send(message);
         }
+    }
+
+    protected static String shuffler(String message){
+        List<String> characters = Arrays.asList(message.split(""));
+        Collections.shuffle(characters);
+        String afterShuffle = "";
+              for (String character : characters){
+                    afterShuffle += character;
+              }
+        return afterShuffle;
     }
     //end of my changes
     public static void main(String[] args) {
