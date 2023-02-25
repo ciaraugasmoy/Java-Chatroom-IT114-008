@@ -79,12 +79,13 @@ public class Server {
         } else
         if(message.equalsIgnoreCase("hep")){
             sendPrivateMessage(clientId, "wack");
-        } /*else
-        if(message.startsWith("DM ")){
-            String mymessage= message.replaceFirst("DM ", "");
-            String recip= mymessage.split(" ")[0];
-            relayPrivateMessage(clientId, recip, mymessage);
-        }*/
+        } else
+        if(message.toUpperCase().startsWith("DM ")){
+            String mymessage= message.substring(3);
+            long recip= Long.parseLong(mymessage.split(" ")[0]);
+            String strippedmessage= mymessage.replaceFirst(mymessage.split(" ")[0], "");
+            relayPrivateMessage(clientId, recip, strippedmessage);
+        }
         return false;
     }
 
@@ -111,14 +112,15 @@ public class Server {
         Iterator<ServerThread> it = clients.iterator();
         while (it.hasNext()) {
             ServerThread client = it.next();
+          //  client.send("IT WORKS??");
             if(client.getId() == senderID){
                //send message to client personally
-               String sentmessage= "[PRIVATE] To "+recipID+ ": "+ message;
+               String sentmessage= "[PRIVATE] YOU to "+recipID+ ": "+ message;
                client.send(sentmessage);
-            } else
+            }
             if(client.getId() == recipID){
                 //send message to client personally
-                String recmessage="[PRIVATE] From "+senderID+ ": "+ message;
+                String recmessage="[PRIVATE] From "+senderID+ " to YOU: "+ message;
                 client.send(recmessage);
             }
         }
