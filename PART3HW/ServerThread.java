@@ -55,6 +55,7 @@ public class ServerThread extends Thread {
             isRunning = true;
             String fromClient;
             //welcomes client
+            server.sendPublicMessage("Client["+ this.getId()+"] has joined the Server!");
             server.sendPrivateMessage(this.getId(),"Welcome client["+ this.getId()+"] welcome to the server");
             server.sendPrivateMessage(this.getId(),"Type HELP for all commands");
             while (isRunning && // flag to let us easily control the loop
