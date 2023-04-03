@@ -191,7 +191,7 @@ public class Room implements AutoCloseable {
             // it was a command, don't broadcast
             return;
         }
-        // PRIVATE MESSAGE FUCTIONALITY
+        //ccu3 PRIVATE MESSAGE FUCTIONALITY
         if(message.toUpperCase().startsWith("DM ")){
             String mymessage= message.substring(3);
             String clientname= mymessage.split(" ")[0];
