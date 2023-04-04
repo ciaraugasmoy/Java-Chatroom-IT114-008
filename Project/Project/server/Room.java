@@ -1,5 +1,8 @@
 package Project.server;
-
+//my imported 
+import java.util.Random;
+import java.util.regex.*;  
+//end
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -191,14 +194,37 @@ public class Room implements AutoCloseable {
             // it was a command, don't broadcast
             return;
         }
+        //ccu3 commands roll flip etc
+        if(message.startsWith("/")){
+            String command=message.split(" ")[0];
+            if (command.equals("/roll")){
+                String mynums=message.split(" ")[1];
+                if(mynums.matches("\\d+d{1}\\d+")){
+                    int ndice=Integer.parseInt(mynums.split("d")[0]);
+                    int sides=Integer.parseInt(mynums.split("d")[1]);
+                    message=roll(ndice,sides);
+                }
+                else if(mynums.matches("\\d+")){
+                    int sides=Integer.parseInt(mynums);
+                    message=roll(1,sides);
+                }
+            }
+            else if(command.equals("/flip")){
+                if(message.equals("/flip")){ //must only say flip
+                    message=flip();
+                }  
+            }
+        }
         //ccu3 PRIVATE MESSAGE FUCTIONALITY
-        if(message.toUpperCase().startsWith("DM ")){
-            String mymessage= message.substring(3);
+        if(message.toUpperCase().startsWith("@")){
+            String mymessage= message.substring(1);
             String clientname= mymessage.split(" ")[0];
             String finalmessage= mymessage.replaceFirst(mymessage.split(" ")[0], "");
             sendPrivateMessage(sender, clientname, finalmessage);
             return;
         }
+        //ccu3 public message functionality markdown to html
+        message=markdownConverter(message);
         long from = sender == null ? Constants.DEFAULT_CLIENT_ID : sender.getClientId();
         Iterator<ServerThread> iter = clients.iterator();
         while (iter.hasNext()) {
@@ -209,25 +235,84 @@ public class Room implements AutoCloseable {
             }
         }
     }
+
     //CCU3 sendprivat message
     protected void sendPrivateMessage(ServerThread sender, String recipName, String message){
         long from = sender == null ? Constants.DEFAULT_CLIENT_ID : sender.getClientId();
         Iterator<ServerThread> it = clients.iterator();
         while (it.hasNext()) {
             ServerThread client = it.next();
-          //  client.send("IT WORKS??");
             if(client.getClientName() == sender.getClientName()){
                //send message to client personally
-               String sentmessage= message+"[SENT PRIVATELY]";
+               String sentmessage= message+" [SENT PRIVATELY]";
                client.sendMessage(from, sentmessage);
             }
             if(client.getClientName().equals(recipName)){
                 //send message to client personally
-                String recmessage=message+"[SENT PRIVATELY]";
+                String recmessage=message+" [SENT PRIVATELY]";
                 client.sendMessage(from, recmessage);
             }
         }
     }
+    //ccu3 flip function
+    private String flip(){
+        Random r = new Random();
+        int chance = r.nextInt(2);
+        if (chance == 1) {
+           return"tails";
+        } else {
+           return"heads";
+        }  
+    }
+    //ccu3 roll function
+    private String roll(int dicenum,int dicesides){
+        int result;
+        String finalresult="";
+        Random ran= new Random();
+        //between
+        for (int i=0;i<dicenum;i++){
+            result = ran.nextInt(dicesides);
+            int currdie=i+1;
+            finalresult= finalresult+"Die"+currdie+"="+result+" ";
+        }
+        return finalresult;
+    }
+    //ccu3 handle markdown to html
+    private String markdownConverter(String msg){
+        String formatpattern = "(\\*([^*]){1,}\\*|\\_([^_]){1,}\\_|\\~([^~]){1,}\\~|\\&[a-z].{1,}\\&)";
+
+        Pattern pattern = Pattern.compile(formatpattern);
+        Matcher matcher = pattern.matcher(msg);
+		String updatedmsg=msg;
+        String replacement="";
+
+
+    while(matcher.find()){
+ 		String trimmedmsg = matcher.group().substring(1,matcher.group().length()-1);
+        if (matcher.group().startsWith("*")){
+            replacement="<bold>"+trimmedmsg+"</bold>";
+        }
+        else if(matcher.group().startsWith("_")){
+      	    replacement="<i>"+trimmedmsg+"</i>";
+        }
+        else if(matcher.group().startsWith("&")){
+            trimmedmsg = matcher.group().substring(2,matcher.group().length()-1);
+            //color
+            if(matcher.group().startsWith("&r")){
+                replacement="<span style=\"color:red\">"+trimmedmsg+"</span>";
+            }
+            else if(matcher.group().startsWith("&g")){
+                replacement="<span style=\"color:green\">"+trimmedmsg+"</span>";
+             }
+            else if(matcher.group().startsWith("&b")){
+                replacement="<span style=\"color:blue\">"+trimmedmsg+"</span>";
+            }
+        }
+         updatedmsg = matcher.replaceFirst(replacement);
+         matcher = pattern.matcher(updatedmsg);
+    }
+        return updatedmsg;    
+  }
 
 
     protected synchronized void sendConnectionStatus(ServerThread sender, boolean isConnected) {

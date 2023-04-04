@@ -1,0 +1,6 @@
+1. handle disconnected for sendPrivateMessage function
+    -combine functions
+2. handle cases of 0 die in roll function
+3. handle incorrectly formated commands instead of sending it as a message
+4. instructions command
+5.newer java version
