@@ -279,13 +279,12 @@ public class Room implements AutoCloseable {
     }
     //ccu3 handle markdown to html
     private String markdownConverter(String msg){
-        String formatpattern = "(\\*([^*]){1,}\\*|\\_([^_]){1,}\\_|\\~([^~]){1,}\\~|\\&[a-z].{1,}\\&)";
+        String formatpattern = "(\\*([^*]){1,}\\*|\\_([^_]){1,}\\_|~([^~]){1,}~|\\&[a-z].{1,}\\&)";
 
         Pattern pattern = Pattern.compile(formatpattern);
         Matcher matcher = pattern.matcher(msg);
 		String updatedmsg=msg;
         String replacement="";
-
 
     while(matcher.find()){
  		String trimmedmsg = matcher.group().substring(1,matcher.group().length()-1);
@@ -294,6 +293,9 @@ public class Room implements AutoCloseable {
         }
         else if(matcher.group().startsWith("_")){
       	    replacement="<i>"+trimmedmsg+"</i>";
+        }
+        else if(matcher.group().startsWith("~")){
+            replacement="<u>"+trimmedmsg+"</u>";
         }
         else if(matcher.group().startsWith("&")){
             trimmedmsg = matcher.group().substring(2,matcher.group().length()-1);
@@ -311,7 +313,8 @@ public class Room implements AutoCloseable {
          updatedmsg = matcher.replaceFirst(replacement);
          matcher = pattern.matcher(updatedmsg);
     }
-        return updatedmsg;    
+       // return msg+"\n Converted Message:"+updatedmsg;    
+       return updatedmsg;
   }
 
 
