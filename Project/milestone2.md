@@ -1,13 +1,26 @@
 <table><tr><td> <em>Assignment: </em> IT114 Chatroom Milestone 2</td></tr>
 <tr><td> <em>Student: </em> Ciara Ugas-Moy (ccu3)</td></tr>
-<tr><td> <em>Generated: </em> 4/4/2023 1:08:35 AM</td></tr>
+<tr><td> <em>Generated: </em> 4/4/2023 7:42:53 PM</td></tr>
 <tr><td> <em>Grading Link: </em> <a rel="noreferrer noopener" href="https://learn.ethereallab.app/homework/IT114-008-S23/it114-chatroom-milestone-2/grade/ccu3" target="_blank">Grading</a></td></tr></table>
 <table><tr><td> <em>Instructions: </em> <p>Implement the features from Milestone2 from the proposal document:&nbsp; <a href="https://docs.google.com/document/d/1ONmvEvel97GTFPGfVwwQC96xSsobbSbk56145XizQG4/view">https://docs.google.com/document/d/1ONmvEvel97GTFPGfVwwQC96xSsobbSbk56145XizQG4/view</a></p>
 </td></tr></table>
-<table><tr><td> <em>Deliverable 1: </em> Payload </td></tr><tr><td><em>Status: </em> <img width="100" height="20" src="https://user-images.githubusercontent.com/54863474/211707795-a9c94a71-7871-4572-bfae-ad636f8f8474.png"></td></tr>
+<table><tr><td> <em>Deliverable 1: </em> Payload </td></tr><tr><td><em>Status: </em> <img width="100" height="20" src="https://user-images.githubusercontent.com/54863474/211707773-e6aef7cb-d5b2-4053-bbb1-b09fc609041e.png"></td></tr>
 <tr><td><table><tr><td> <em>Sub-Task 1: </em> Payload Screenshots</td></tr>
-<tr><td><table><tr><td>Missing Image</td></tr>
-<tr><td> <em>Caption:</em> (missing)</td></tr>
+<tr><td><table><tr><td><img width="768px" src="https://user-images.githubusercontent.com/98501033/229933606-ba5384f4-a7c5-4dca-ac26-e90a34fad9b6.png"/></td></tr>
+<tr><td> <em>Caption:</em> <p>Payloads CONNECT, CLIENT_ID, RESET_USER_LIST,<br></p>
+</td></tr>
+<tr><td><img width="768px" src="https://user-images.githubusercontent.com/98501033/229935128-e27ef49c-3c86-496c-b30e-2a527ef5bacd.png"/></td></tr>
+<tr><td> <em>Caption:</em> <p>CONNECT - when new client joins, sets name, gets name, DISCONNECT - when client disconnects removes them <br>MESSAGE - sends out message to client and server<br>CLIENT_ID - set id when client joins<br> RESET_USER_LIST - sent when new userjoins/ joins new room to update list<br>SYNC_CLIENT - client in synced to room updating the list <br>CREATE_ROOM - sent when client creates room to add new room to list <br>JOIN_ROOM - sent when client calls room to add client to room<br>GET_ROOMS - gets rooms when there are multiple rooms <br>READY - not used in chatroom<br></p>
+</td></tr>
+<tr><td><img width="768px" src="https://user-images.githubusercontent.com/98501033/229936637-953f32be-50b0-466a-a0a0-3416da341653.png"/></td></tr>
+<tr><td> <em>Caption:</em> <p>Payloads MESSAGE, SYNC_CLIENT, CREATE_ROOM, JOIN_ROOM,<br></p>
+</td></tr>
+<tr><td><img width="768px" src="https://user-images.githubusercontent.com/98501033/229945216-c587f078-4f78-44f7-860e-28003b500a81.png"/></td></tr>
+<tr><td> <em>Caption:</em> <p>use of payloads in serverthread<br></p>
+</td></tr>
+<tr><td><img width="768px" src="https://user-images.githubusercontent.com/98501033/229945387-3d429064-7f0f-46ec-bc6e-38f81f4c15a9.png"/></td></tr>
+<tr><td> <em>Caption:</em> <p>use of payloads in client.java<br></p>
+</td></tr>
 </table></td></tr>
 </table></td></tr>
 <table><tr><td> <em>Deliverable 2: </em> Server-side commands </td></tr><tr><td><em>Status: </em> <img width="100" height="20" src="https://user-images.githubusercontent.com/54863474/211707773-e6aef7cb-d5b2-4053-bbb1-b09fc609041e.png"></td></tr>
@@ -45,8 +58,8 @@
 <tr><td> <em>Sub-Task 3: </em> Explain how you got each style applied</td></tr>
 <tr><td> <em>Response:</em> <div>Format , markdown</div><b>bold</b> = *bold*<div><i>italics</i> = _italics_</div><div><u>underline</u>&nbsp;= ~underline~</div><div>red,green,blue = &amp;rtext&amp;,&amp;gtext&amp;,&amp;btext&amp;</div><div><br></div><div>I used regex to<br>find if any of the markdown patterns were found, and replaced each section<br>with the appropriate HTML tags which would produce the equivalent expected output.</div><div>Tags can<br>be nested as whenever the outer markdown patterns are replaced the loop checks<br>the updated message and seeks any remaining regex matches to my markdown.</div><br></td></tr>
 </table></td></tr>
-<table><tr><td> <em>Deliverable 4: </em> Misc </td></tr><tr><td><em>Status: </em> <img width="100" height="20" src="https://user-images.githubusercontent.com/54863474/211707795-a9c94a71-7871-4572-bfae-ad636f8f8474.png"></td></tr>
+<table><tr><td> <em>Deliverable 4: </em> Misc </td></tr><tr><td><em>Status: </em> <img width="100" height="20" src="https://user-images.githubusercontent.com/54863474/211707773-e6aef7cb-d5b2-4053-bbb1-b09fc609041e.png"></td></tr>
 <tr><td><table><tr><td> <em>Sub-Task 1: </em> Include the pull request for Milestone2 to main</td></tr>
-<tr><td>Not provided</td></tr>
+<tr><td> <a rel="noreferrer noopener" target="_blank" href="https://github.com/ciaraugasmoy/IT114-008/pull/6">https://github.com/ciaraugasmoy/IT114-008/pull/6</a> </td></tr>
 </table></td></tr>
 <table><tr><td><em>Grading Link: </em><a rel="noreferrer noopener" href="https://learn.ethereallab.app/homework/IT114-008-S23/it114-chatroom-milestone-2/grade/ccu3" target="_blank">Grading</a></td></tr></table>
