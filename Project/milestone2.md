@@ -9,7 +9,7 @@
 <tr><td><table><tr><td><img width="768px" src="https://user-images.githubusercontent.com/98501033/229933606-ba5384f4-a7c5-4dca-ac26-e90a34fad9b6.png"/></td></tr>
 <tr><td> <em>Caption:</em> <p>Payloads CONNECT, CLIENT_ID, RESET_USER_LIST,<br></p>
 </td></tr>
-<tr><td><img width="768px" src="https://user-images.githubusercontent.com/98501033/229935128-e27ef49c-3c86-496c-b30e-2a527ef5bacd.png"/></td></tr>
+<tr><td><img width="768px" src="https://user-images.githubusercontent.com/98501033/229949283-e1c7a69d-7c66-4d30-8f38-1a6ab9520136.png"/></td></tr>
 <tr><td> <em>Caption:</em> <p>CONNECT - when new client joins, sets name, gets name, DISCONNECT - when client disconnects removes them <br>MESSAGE - sends out message to client and server<br>CLIENT_ID - set id when client joins<br> RESET_USER_LIST - sent when new userjoins/ joins new room to update list<br>SYNC_CLIENT - client in synced to room updating the list <br>CREATE_ROOM - sent when client creates room to add new room to list <br>JOIN_ROOM - sent when client calls room to add client to room<br>GET_ROOMS - gets rooms when there are multiple rooms <br>READY - not used in chatroom<br></p>
 </td></tr>
 <tr><td><img width="768px" src="https://user-images.githubusercontent.com/98501033/229936637-953f32be-50b0-466a-a0a0-3416da341653.png"/></td></tr>
