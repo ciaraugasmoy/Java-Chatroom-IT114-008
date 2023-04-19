@@ -197,7 +197,7 @@ public class Room implements AutoCloseable {
         //ccu3 commands roll flip etc
         if(message.startsWith("/")){
             String command=message.split(" ")[0];
-            if (command.equals("/roll")){
+            if (command.equals("/roll") && (message.split(" ").length==2)){
                 String mynums=message.split(" ")[1];
                 if(mynums.matches("\\d+d{1}\\d+")){
                     int ndice=Integer.parseInt(mynums.split("d")[0]);
@@ -214,7 +214,20 @@ public class Room implements AutoCloseable {
                     message=flip();
                 }  
             }
+            else if(command.equals("/mute") && (message.split(" ").length==2)){
+                    String blockeduser=message.split(" ")[1];
+                    sender.block(blockeduser);
+                    message= "_muted "+ blockeduser +"_";
+            }
+            else if(command.equals("/unmute") && (message.split(" ").length==2)){
+                String unblockeduser=message.split(" ")[1];
+                sender.unblock(unblockeduser);
+                message= "_unmuted "+ unblockeduser +"_";
+            }
         }
+    
+        //ccu3 public message functionality markdown to html
+        message = markdownConverter(message);
         //ccu3 PRIVATE MESSAGE FUCTIONALITY
         if(message.toUpperCase().startsWith("@")){
             String mymessage= message.substring(1);
@@ -223,45 +236,48 @@ public class Room implements AutoCloseable {
             sendPrivateMessage(sender, clientname, finalmessage);
             return;
         }
-        //ccu3 public message functionality markdown to html
-        message=markdownConverter(message);
-        long from = sender == null ? Constants.DEFAULT_CLIENT_ID : sender.getClientId();
-        Iterator<ServerThread> iter = clients.iterator();
-        while (iter.hasNext()) {
-            ServerThread client = iter.next();
-            boolean messageSent = client.sendMessage(from, message);
-            if (!messageSent) {
-                handleDisconnect(iter, client);
+        else{
+            long from = sender == null ? Constants.DEFAULT_CLIENT_ID : sender.getClientId();
+            Iterator<ServerThread> iter = clients.iterator();
+            while (iter.hasNext()) {
+                ServerThread client = iter.next();
+                // if sender does not exist in recipName.blockedlist then
+                if (!client.getBlockedList().contains(sender.getClientName())){
+                    boolean messageSent = client.sendMessage(from, message);
+                    if (!messageSent) {
+                        handleDisconnect(iter, client);
+                    }
+                }
             }
         }
     }
 
-    //CCU3 sendprivat message
+    //CCU3 sendprivate message
     protected void sendPrivateMessage(ServerThread sender, String recipName, String message){
         long from = sender == null ? Constants.DEFAULT_CLIENT_ID : sender.getClientId();
         Iterator<ServerThread> it = clients.iterator();
+        // if sender does not exist in recipName.blockedlist then // if !blockedlist.contains(long from)
+        
         while (it.hasNext()) {
             ServerThread client = it.next();
-            if(client.getClientName() == sender.getClientName()){
-               //send message to client personally
-               String sentmessage= message+" [SENT PRIVATELY]";
-               client.sendMessage(from, sentmessage);
-            }
-            if(client.getClientName().equals(recipName)){
-                //send message to client personally
-                String recmessage=message+" [SENT PRIVATELY]";
-                client.sendMessage(from, recmessage);
+            if (!client.getBlockedList().contains(sender.getClientName())){
+                if(client.getClientName() == sender.getClientName() || client.getClientName().equals(recipName)){ 
+                    //send message to client personally and show sender
+                    String sentmessage= message+" [SENT PRIVATELY TO "+recipName.toUpperCase()+" ]";
+                    client.sendMessage(from, sentmessage);
+                }
             }
         }
     }
+
     //ccu3 flip function
     private String flip(){
         Random r = new Random();
         int chance = r.nextInt(2);
         if (chance == 1) {
-           return"tails";
+           return"_flipped coin_ <br>Result: tails";
         } else {
-           return"heads";
+           return"_flipped coin_ <br>Result: heads";
         }  
     }
     //ccu3 roll function
@@ -275,6 +291,7 @@ public class Room implements AutoCloseable {
             int currdie=i+1;
             finalresult= finalresult+"Die"+currdie+"="+result+" ";
         }
+        finalresult= "_Rolled "+dicenum+" die/dice of "+dicesides+" sides_ <br>"+finalresult;
         return finalresult;
     }
     //ccu3 handle markdown to html
@@ -289,10 +306,10 @@ public class Room implements AutoCloseable {
     while(matcher.find()){
  		String trimmedmsg = matcher.group().substring(1,matcher.group().length()-1);
         if (matcher.group().startsWith("*")){
-            replacement="<bold>"+trimmedmsg+"</bold>";
+            replacement="<b>"+trimmedmsg+"</b>";
         }
         else if(matcher.group().startsWith("_")){
-      	    replacement="<i>"+trimmedmsg+"</i>";
+      	    replacement="<em>"+trimmedmsg+"</em>";
         }
         else if(matcher.group().startsWith("~")){
             replacement="<u>"+trimmedmsg+"</u>";
@@ -313,7 +330,7 @@ public class Room implements AutoCloseable {
          updatedmsg = matcher.replaceFirst(replacement);
          matcher = pattern.matcher(updatedmsg);
     }
-       // return msg+"\n Converted Message:"+updatedmsg;    
+       // return msg+"\n Converted Message:"+updatedmsg;   
        return updatedmsg;
   }
 
