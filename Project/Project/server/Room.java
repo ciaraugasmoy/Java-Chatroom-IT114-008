@@ -275,9 +275,9 @@ public class Room implements AutoCloseable {
         Random r = new Random();
         int chance = r.nextInt(2);
         if (chance == 1) {
-           return"_flipped coin_ <br>Result: tails";
+           return"<span style=\"color:#8B008B\">_flipped coin_ <br>Result: tails</span>";
         } else {
-           return"_flipped coin_ <br>Result: heads";
+           return"<span style=\"color:#8B008B\">_flipped coin_ <br>Result: heads</span>";
         }  
     }
     //ccu3 roll function
@@ -291,12 +291,12 @@ public class Room implements AutoCloseable {
             int currdie=i+1;
             finalresult= finalresult+"Die"+currdie+"="+result+" ";
         }
-        finalresult= "_Rolled "+dicenum+" die/dice of "+dicesides+" sides_ <br>"+finalresult;
+        finalresult= "<span style=\"color:#8B008B\">_Rolled "+dicenum+" die/dice of "+dicesides+" sides_ <br>"+finalresult+"</span>";
         return finalresult;
     }
     //ccu3 handle markdown to html
     private String markdownConverter(String msg){
-        String formatpattern = "(\\*([^*]){1,}\\*|\\_([^_]){1,}\\_|~([^~]){1,}~|\\&[a-z].{1,}\\&)";
+        String formatpattern = "(\\*([^*]){1,}\\*|\\_([^_]){1,}\\_|~([^~]){1,}~|\\&[r].{1,}\\&[r]|\\&[g].{1,}\\&[g]|\\&[b].{1,}\\&[b])";
 
         Pattern pattern = Pattern.compile(formatpattern);
         Matcher matcher = pattern.matcher(msg);
@@ -315,7 +315,7 @@ public class Room implements AutoCloseable {
             replacement="<u>"+trimmedmsg+"</u>";
         }
         else if(matcher.group().startsWith("&")){
-            trimmedmsg = matcher.group().substring(2,matcher.group().length()-1);
+            trimmedmsg = matcher.group().substring(2,matcher.group().length()-2);
             //color
             if(matcher.group().startsWith("&r")){
                 replacement="<span style=\"color:red\">"+trimmedmsg+"</span>";
