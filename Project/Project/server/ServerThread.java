@@ -6,6 +6,7 @@ import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.ArrayList;
 
 import Project.common.Constants;
 import Project.common.Payload;
@@ -25,6 +26,23 @@ public class ServerThread extends Thread {
     private Room currentRoom;
     private static Logger logger = Logger.getLogger(ServerThread.class.getName());
     private long myClientId;
+    //ccu3 my blocked list
+    private ArrayList<String> blockedlist= new ArrayList<String>();
+
+    public ArrayList<String> getBlockedList(){
+        return blockedlist;
+    }
+    public void block(String clientname){
+        if(!blockedlist.contains(clientname)){
+            blockedlist.add(clientname);
+        }
+    }
+
+    public void unblock(String clientname){
+        if(blockedlist.contains(clientname)){
+            blockedlist.remove(clientname);
+        }
+    }
 
     public void setClientId(long id) {
         myClientId = id;

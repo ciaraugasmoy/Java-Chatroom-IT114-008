@@ -150,7 +150,7 @@ public class Server {
                client.send(message);
         }
     }
-
+    //ccu3
     protected static String shuffler(String message){
         List<String> characters = Arrays.asList(message.split(""));
         Collections.shuffle(characters);
