@@ -244,6 +244,7 @@ public class Room implements AutoCloseable {
                 // if sender does not exist in recipName.blockedlist then
                 if (!client.getBlockedList().contains(sender.getClientName())){
                     boolean messageSent = client.sendMessage(from, message);
+                    //ccu3 chatlog if(client.getClientName() == sender.getClientName() ){ .../ client.chatLog(message)}
                     if (!messageSent) {
                         handleDisconnect(iter, client);
                     }
@@ -266,6 +267,7 @@ public class Room implements AutoCloseable {
                     String sentmessage= message+" [SENT PRIVATELY TO "+recipName.toUpperCase()+" ]";
                     client.sendMessage(from, sentmessage);
                 }
+                //ccu3 chatlog if(client.getClientName() == sender.getClientName() ){ .../ client.chatLog(sentmessage)}
             }
         }
     }

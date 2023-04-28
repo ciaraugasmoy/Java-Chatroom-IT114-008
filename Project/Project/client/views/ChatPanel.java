@@ -12,7 +12,11 @@ import java.awt.event.ContainerEvent;
 import java.awt.event.ContainerListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;  
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -37,6 +41,9 @@ public class ChatPanel extends JPanel {
     private JPanel wrapper = null;
     private UserListPanel userListPanel;
     private Dimension lastSize = new Dimension();
+    private StringBuilder mychatlog = new StringBuilder();
+    private final String TEMPLATESTART ="<!DOCTYPE html><head><title>chatlog</title></head><body>";
+    private final String TEMPLATEEND ="</body></html>";
 
     public ChatPanel(ICardControls controls) {
         super(new BorderLayout(10, 10));
@@ -60,6 +67,9 @@ public class ChatPanel extends JPanel {
         JTextField textValue = new JTextField();
         input.add(textValue);
         JButton button = new JButton("Send");
+        //ccu3 
+        JButton exportbutton = new JButton("Export chat");
+
         // lets us submit with the enter key instead of just the button click
         textValue.addKeyListener(new KeyListener() {
 
@@ -99,12 +109,32 @@ public class ChatPanel extends JPanel {
                 e1.printStackTrace();
             }
         });
+        
+        //onclick export data
+        exportbutton.addActionListener((event) -> {
+            //export chat onclick get chatarea, if jeditor pane cast call get text, stringbuilder to file.
+            System.out.println(mychatlog);
+            System.out.println();
+            FileWriter chatfile;
+            String mycontent= TEMPLATESTART+ mychatlog.toString()+TEMPLATEEND;
+            try {
+                chatfile = new FileWriter(myfilename());
+                chatfile.write(mycontent);
+                chatfile.close();
+            } catch (IOException e1) {
+                // TODO Auto-generated catch block
+                e1.printStackTrace();
+            }
+
+        });        
         chatArea = content;
         this.wrapper = wrapper;
         input.add(button);
         userListPanel = new UserListPanel(controls);
         this.add(userListPanel, BorderLayout.EAST);
         this.add(input, BorderLayout.SOUTH);
+        //adds button to top of chat panel 100%width
+        this.add(exportbutton, BorderLayout.NORTH);
         this.setName(Card.CHAT.name());
         controls.addPanel(Card.CHAT.name(), this);
         chatArea.addContainerListener(new ContainerListener() {
@@ -242,6 +272,15 @@ public class ChatPanel extends JPanel {
         // scroll down on new message
         JScrollBar vertical = ((JScrollPane) chatArea.getParent().getParent()).getVerticalScrollBar();
         vertical.setValue(vertical.getMaximum());
-        System.out.println(textContainer.getText());
+        //prints out to console
+        mychatlog.append(text+"<br>");
+    }
+
+    private String myfilename(){
+        LocalDateTime now = LocalDateTime.now();  
+        DateTimeFormatter format = DateTimeFormatter.ofPattern("_dd-MM-yyyy_HH-mm-ss");  
+        String formatDateTime = now.format(format);  
+        String filename="Project/Project/client/chatlogs/chat"+formatDateTime+".html";
+        return filename;
     }
 }
