@@ -1,7 +1,7 @@
 package Project.client.views;
 
 import java.awt.BorderLayout;
-
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.event.ContainerEvent;
@@ -90,6 +90,7 @@ public class UserListPanel extends JPanel {
                 new Dimension(content.getWidth(), ClientUtils.calcHeightForText(this, clientName, content.getWidth())));
         textContainer.setMaximumSize(textContainer.getPreferredSize());
         textContainer.setEditable(false);
+
         // remove background and border (comment these out to see what it looks like
         // otherwise)
         ClientUtils.clearBackground(textContainer);
@@ -103,7 +104,7 @@ public class UserListPanel extends JPanel {
         for (Component c : cs) {
             if (c.getName().equals(clientId + "")) {
                 userListArea.remove(c);
-                break;
+                break;        
             }
         }
     }

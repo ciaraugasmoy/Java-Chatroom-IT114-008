@@ -1,5 +1,8 @@
 package Project.server;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -7,6 +10,7 @@ import java.net.Socket;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.ArrayList;
+import java.util.Scanner;
 
 import Project.common.Constants;
 import Project.common.Payload;
@@ -29,18 +33,50 @@ public class ServerThread extends Thread {
     //ccu3 my blocked list
     private ArrayList<String> blockedlist= new ArrayList<String>();
 
+    public void initBlockList(){ 
+        try {
+            Scanner scan= new Scanner(new File(myfilename()));
+            String line=scan.nextLine();
+            String[] names=line.substring(1,line.length()-1).split(",");
+            for(String name: names){
+                blockedlist.add(name.trim());
+            }
+            scan.close();
+        } catch (FileNotFoundException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+    }
+    private void updateBlockList(){
+        FileWriter blockfile;
+        try {
+            blockfile = new FileWriter(myfilename());
+            blockfile.write(blockedlist.toString());
+            blockfile.close();
+        } catch (IOException e1) {
+            // TODO Auto-generated catch block
+            e1.printStackTrace();
+        }
+    }
+    private String myfilename(){
+        String name=getClientName();
+        String filename="Project/Project/server/blocklists/"+name+".txt";
+        return filename;
+    }
     public ArrayList<String> getBlockedList(){
         return blockedlist;
     }
     public void block(String clientname){
         if(!blockedlist.contains(clientname)){
             blockedlist.add(clientname);
+            updateBlockList();
         }
     }
 
     public void unblock(String clientname){
         if(blockedlist.contains(clientname)){
             blockedlist.remove(clientname);
+            updateBlockList();
         }
     }
 

@@ -2,6 +2,7 @@ package Project.client.views;
 
 import java.awt.Adjustable;
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.event.AdjustmentEvent;
@@ -113,8 +114,7 @@ public class ChatPanel extends JPanel {
         //onclick export data
         exportbutton.addActionListener((event) -> {
             //export chat onclick get chatarea, if jeditor pane cast call get text, stringbuilder to file.
-            System.out.println(mychatlog);
-            System.out.println();
+          //  System.out.println(mychatlog);
             FileWriter chatfile;
             String mycontent= TEMPLATESTART+ mychatlog.toString()+TEMPLATEEND;
             try {
