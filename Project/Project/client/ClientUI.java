@@ -1,6 +1,5 @@
 package Project.client;
 
-import java.awt.BorderLayout;
 import java.awt.CardLayout;
 import java.awt.Component;
 import java.awt.Container;
@@ -197,6 +196,8 @@ public class ClientUI extends JFrame implements IClientEvents, ICardControls {
         if (currentCard.ordinal() >= Card.CHAT.ordinal()) {
             processClientConnectionStatus(clientId, clientName, true);
             chatPanel.addText(String.format("*%s %s*", clientName, message));
+           //UPDATES FORMAT UPON CONNECTING
+            chatPanel.updateUserListFormat(clientId);
         }
     }
 
@@ -213,6 +214,22 @@ public class ClientUI extends JFrame implements IClientEvents, ICardControls {
         if (currentCard.ordinal() >= Card.CHAT.ordinal()) {
             String clientName = mapClientId(clientId);
             chatPanel.addText(String.format("%s: %s", clientName, message));
+            //ccu3 makes last client who sent message red
+            chatPanel.updateUserListFormat(clientId);
+        }
+    }
+
+    //ccu3 onfetching blockedlist
+    public void onGetBlocked(long clientId){
+        if (currentCard.ordinal() >= Card.CHAT.ordinal()) {
+            //ccu3 makes last client who sent message red
+            chatPanel.updateBlockFormat(clientId);
+        }
+    }
+    public void onGetUnblocked(long clientId){
+        if (currentCard.ordinal() >= Card.CHAT.ordinal()) {
+            //ccu3 makes last client who sent message red
+            chatPanel.updateUnblockFormat(clientId);
         }
     }
 

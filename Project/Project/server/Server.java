@@ -88,6 +88,8 @@ public enum Server {
     void handleIncomingClient(ServerThread client) {
         client.setClientId(nextClientId);// server reference
         client.sendClientId(nextClientId);// client reference
+        //init block list
+        client.initBlockList();
         nextClientId++;
         if (nextClientId < 0) {// will use overflow to reset our counter
             nextClientId = 1;

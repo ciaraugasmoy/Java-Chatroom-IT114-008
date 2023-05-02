@@ -51,9 +51,30 @@ public class Room implements AutoCloseable {
             client.sendResetUserList();
             syncCurrentUsers(client);
             sendConnectionStatus(client, true);
+            //get blocked list to send paylooad
+            initBlockListForUI(client);
+            reinitBlockListForUI(client);
         }
     }
 
+    protected void initBlockListForUI(ServerThread client){
+        ArrayList<String> blockedlist = client.getBlockedList();
+        for (String name: blockedlist){
+            long myblockedid= getClientIdFromName(name);
+            client.sendBlocked(myblockedid);
+        }
+    }
+    
+     protected void reinitBlockListForUI(ServerThread client) {
+        Iterator<ServerThread> iter = clients.iterator();
+        while (iter.hasNext()) {
+            ServerThread existingClient = iter.next();
+            if (existingClient.getBlockedList().contains(client.getClientName())) {
+                existingClient.sendBlocked(client.getClientId());
+                }
+        }
+    }
+    
     protected synchronized void removeClient(ServerThread client) {
         if (!isRunning) {
             return;
@@ -218,16 +239,17 @@ public class Room implements AutoCloseable {
                     String blockeduser=message.split(" ")[1];
                     sender.block(blockeduser);
                     message= "_muted "+ blockeduser +"_";
+                    sender.sendBlocked(getClientIdFromName(blockeduser));
             }
             else if(command.equals("/unmute") && (message.split(" ").length==2)){
                 String unblockeduser=message.split(" ")[1];
                 sender.unblock(unblockeduser);
                 message= "_unmuted "+ unblockeduser +"_";
+                //ccu3 paload block via serverthread
+                sender.sendUnblocked(getClientIdFromName(unblockeduser));
             }
         }
-    
         //ccu3 public message functionality markdown to html
-        message = markdownConverter(message);
         //ccu3 PRIVATE MESSAGE FUCTIONALITY
         if(message.toUpperCase().startsWith("@")){
             String mymessage= message.substring(1);
@@ -237,23 +259,48 @@ public class Room implements AutoCloseable {
             return;
         }
         else{
-            long from = sender == null ? Constants.DEFAULT_CLIENT_ID : sender.getClientId();
-            Iterator<ServerThread> iter = clients.iterator();
-            while (iter.hasNext()) {
-                ServerThread client = iter.next();
-                // if sender does not exist in recipName.blockedlist then
-                if (!client.getBlockedList().contains(sender.getClientName())){
-                    boolean messageSent = client.sendMessage(from, message);
-                    if (!messageSent) {
-                        handleDisconnect(iter, client);
-                    }
+            sendPublicMessage(sender, message);
+        }
+    }
+
+    //ccu3 private message
+
+    //ccu3 get client id from name
+    protected long getClientIdFromName(String name){
+        long id;
+        Iterator<ServerThread> iter = clients.iterator();
+        while (iter.hasNext()) {
+            ServerThread client = iter.next();
+            // name = client from list
+            if (client.getClientName().equals(name)){
+                id = client.getClientId();
+                return id;
+            }
+        }
+        //fix if client not found
+        return -1;
+    }
+
+    //ccu3 send public message
+    protected void sendPublicMessage(ServerThread sender, String message){
+        message = markdownConverter(message);
+        long from = sender == null ? Constants.DEFAULT_CLIENT_ID : sender.getClientId();
+        Iterator<ServerThread> iter = clients.iterator();
+        while (iter.hasNext()) {
+            ServerThread client = iter.next();
+            // if sender does not exist in recipName.blockedlist then
+            if (!client.getBlockedList().contains(sender.getClientName())){
+                boolean messageSent = client.sendMessage(from, message);
+                //ccu3 chatlog if(client.getClientName() == sender.getClientName() ){ .../ client.chatLog(message)}
+                if (!messageSent) {
+                    handleDisconnect(iter, client);
                 }
             }
         }
     }
-
     //CCU3 sendprivate message
     protected void sendPrivateMessage(ServerThread sender, String recipName, String message){
+        message = markdownConverter(message);
         long from = sender == null ? Constants.DEFAULT_CLIENT_ID : sender.getClientId();
         Iterator<ServerThread> it = clients.iterator();
         // if sender does not exist in recipName.blockedlist then // if !blockedlist.contains(long from)

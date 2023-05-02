@@ -76,4 +76,6 @@ public interface IClientEvents {
     void onReceiveOut(long clientId);
 
     void onReceivePoints(long clientId, int points);
+    void onGetBlocked(long clientId);
+    void onGetUnblocked(long clientId);
 }
