@@ -231,6 +231,14 @@ public enum Client {
                 listeners.forEach(l -> l.onMessageReceive(
                         p.getClientId(), p.getMessage()));
                 break;
+            case BLOCK:
+                listeners.forEach(l -> l.onGetBlocked(
+                    p.getClientId()));
+                break;
+            case UNBLOCK:
+                listeners.forEach(l -> l.onGetUnblocked(
+                    p.getClientId()));
+                break;
             case CLIENT_ID:
                 if (myClientId == Constants.DEFAULT_CLIENT_ID) {
                     myClientId = p.getClientId();

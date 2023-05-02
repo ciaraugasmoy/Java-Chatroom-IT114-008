@@ -2,7 +2,6 @@ package Project.client.views;
 
 import java.awt.Adjustable;
 import java.awt.BorderLayout;
-import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.event.AdjustmentEvent;
@@ -13,11 +12,10 @@ import java.awt.event.ContainerEvent;
 import java.awt.event.ContainerListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;  
+import java.time.format.DateTimeFormatter;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -42,6 +40,7 @@ public class ChatPanel extends JPanel {
     private JPanel wrapper = null;
     private UserListPanel userListPanel;
     private Dimension lastSize = new Dimension();
+    //ccu3 storing chatlog
     private StringBuilder mychatlog = new StringBuilder();
     private final String TEMPLATESTART ="<!DOCTYPE html><head><title>chatlog</title></head><body>";
     private final String TEMPLATEEND ="</body></html>";
@@ -202,9 +201,6 @@ public class ChatPanel extends JPanel {
     }
 
     private void doResize() {
-        if (!this.isVisible()) {
-            return;
-        }
         Dimension frameSize = wrapper.getSize();
         int deltaX = Math.abs(frameSize.width - lastSize.width);
         int deltaY = Math.abs(frameSize.height - lastSize.height);
@@ -253,7 +249,19 @@ public class ChatPanel extends JPanel {
     public void clearUserList() {
         userListPanel.clearUserList();
     }
+    //ccu3 makes last message color.RED, called from client ui on receive message
+    public void updateUserListFormat(long clientId){
+        userListPanel.updateUserListFormat(clientId);
+    }
 
+    //ccu3 using user mute list
+    public void updateBlockFormat(long clientId){
+        userListPanel.updateBlockFormat(clientId);
+    }
+    public void updateUnblockFormat(long clientId){
+        // adds mute 
+        userListPanel.updateUnblockFormat(clientId);
+    }
     public void addText(String text) {
         JPanel content = chatArea;
         // add message
@@ -272,7 +280,7 @@ public class ChatPanel extends JPanel {
         // scroll down on new message
         JScrollBar vertical = ((JScrollPane) chatArea.getParent().getParent()).getVerticalScrollBar();
         vertical.setValue(vertical.getMaximum());
-        //prints out to console
+        //ccu3 keeps track of chatlog
         mychatlog.append(text+"<br>");
     }
 

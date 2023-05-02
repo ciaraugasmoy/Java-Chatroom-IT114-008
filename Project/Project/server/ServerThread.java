@@ -185,6 +185,20 @@ public class ServerThread extends Thread {
         p.setMessage(message);
         return send(p);
     }
+    //cc3 send mute payload
+    public boolean sendBlocked(long clientId) {
+        Payload p = new Payload();
+        p.setPayloadType(PayloadType.BLOCK);
+        p.setClientId(clientId);
+        return send(p);
+    }
+    public boolean sendUnblocked(long clientId) {
+        Payload p = new Payload();
+        p.setPayloadType(PayloadType.UNBLOCK);
+        p.setClientId(clientId);
+        return send(p);
+    }
+    //end of changes
 
     public boolean sendConnectionStatus(long clientId, String who, boolean isConnected) {
         Payload p = new Payload();

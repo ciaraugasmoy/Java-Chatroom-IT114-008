@@ -90,6 +90,7 @@ public class UserListPanel extends JPanel {
                 new Dimension(content.getWidth(), ClientUtils.calcHeightForText(this, clientName, content.getWidth())));
         textContainer.setMaximumSize(textContainer.getPreferredSize());
         textContainer.setEditable(false);
+        //textContainer.setForeground(Color.GREEN);
 
         // remove background and border (comment these out to see what it looks like
         // otherwise)
@@ -113,6 +114,41 @@ public class UserListPanel extends JPanel {
         Component[] cs = userListArea.getComponents();
         for (Component c : cs) {
             userListArea.remove(c);
+        }
+    }
+
+    protected void updateUserListFormat(long clientId){
+        logger.log(Level.INFO, "updating user list last item sent by client id:" + clientId);
+        Component[] cs = userListArea.getComponents();
+        for (Component c : cs) {
+            if (c.getName().equals(clientId + "")) {    
+                //make highlighted in yellow 
+                c.setForeground(Color.RED);
+            }
+            else{// if not blocked  c.getForeground()!= grey
+                if (c.getForeground()!=Color.GRAY){c.setForeground(Color.BLACK);}
+            }
+        }
+    }
+
+    protected void updateBlockFormat(long clientId){
+        logger.log(Level.INFO, "updating user list blocked:" + clientId);
+        Component[] cs = userListArea.getComponents();
+        for (Component c : cs) {
+            if (c.getName().equals(clientId + "")) {    
+                //make highlighted in grey 
+                c.setForeground(Color.GRAY);
+            }
+        }
+    }
+    protected void updateUnblockFormat(long clientId){
+        logger.log(Level.INFO, "updating user list last item sent by client id:" + clientId);
+        Component[] cs = userListArea.getComponents();
+        for (Component c : cs) {
+            if (c.getName().equals(clientId + "")) {    
+                //make highlighted in black 
+                c.setForeground(Color.BLACK);
+            }
         }
     }
 }
