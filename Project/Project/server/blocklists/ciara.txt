@@ -1,1 +1,0 @@
-[jane, maria, lana, allie, alice, anna]
