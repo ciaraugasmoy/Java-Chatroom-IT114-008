@@ -12,6 +12,7 @@ import java.awt.event.ContainerEvent;
 import java.awt.event.ContainerListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.time.LocalDateTime;
@@ -117,9 +118,12 @@ public class ChatPanel extends JPanel {
             FileWriter chatfile;
             String mycontent= TEMPLATESTART+ mychatlog.toString()+TEMPLATEEND;
             try {
-                chatfile = new FileWriter(myfilename());
+                File file = new File(myfilename());
+                String absPath = file.getAbsolutePath();
+                chatfile = new FileWriter(file);
                 chatfile.write(mycontent);
                 chatfile.close();
+                  addText("<em>Your chat export: <br>"+absPath+"</em>");
             } catch (IOException e1) {
                 // TODO Auto-generated catch block
                 e1.printStackTrace();

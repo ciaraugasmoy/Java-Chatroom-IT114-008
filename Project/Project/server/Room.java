@@ -237,16 +237,27 @@ public class Room implements AutoCloseable {
             }
             else if(command.equals("/mute") && (message.split(" ").length==2)){
                     String blockeduser=message.split(" ")[1];
-                    sender.block(blockeduser);
-                    message= "_muted "+ blockeduser +"_";
-                    sender.sendBlocked(getClientIdFromName(blockeduser));
+                    if (!sender.getBlockedList().contains(blockeduser)){
+                        sender.block(blockeduser);
+                        message= "_muted "+ blockeduser +"_";
+                        sender.sendBlocked(getClientIdFromName(blockeduser));
+                    }
+                    else{
+                        message="_already muted "+ blockeduser +"_";
+                    }
             }
             else if(command.equals("/unmute") && (message.split(" ").length==2)){
                 String unblockeduser=message.split(" ")[1];
-                sender.unblock(unblockeduser);
-                message= "_unmuted "+ unblockeduser +"_";
-                //ccu3 paload block via serverthread
-                sender.sendUnblocked(getClientIdFromName(unblockeduser));
+                if(sender.getBlockedList().contains(unblockeduser)){
+                    sender.unblock(unblockeduser);
+                    message= "_unmuted "+ unblockeduser +"_";
+                    //ccu3 paload block via serverthread
+                    sender.sendUnblocked(getClientIdFromName(unblockeduser));
+                }
+                else{
+                    message="_"+ unblockeduser +" is already unmuted_";
+                }
+
             }
         }
         //ccu3 public message functionality markdown to html
